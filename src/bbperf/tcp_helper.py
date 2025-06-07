@@ -1,6 +1,8 @@
 
 import socket
 
+from . import const
+
 from .exceptions import PeerDisconnectedException
 
 
@@ -75,4 +77,12 @@ def set_congestion_control(data_sock):
     cc_algo_str = get_congestion_control(data_sock)
     if cc_algo_str != "cubic":
         raise Exception("ERROR: unexpected congestion control in effect: {}".format(cc_algo_str))
+
+
+def send_setup_complete_message(control_conn):
+    # this is sent by the server back to the client
+
+    control_conn.send_string(const.SETUP_COMPLETE_MSG)
+
+    print("connection setup complete: message sent", flush=True)
 

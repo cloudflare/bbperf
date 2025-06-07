@@ -110,16 +110,6 @@ def server_mainline(args):
 
         print("created data connection", flush=True)
 
-        # send connection setup complete message
-        control_conn.send_string(const.SETUP_COMPLETE_MSG)
-
-        print("connection setup complete: message sent", flush=True)
-        print("test running, {} {} from client {}".format(
-              "udp" if client_args.udp else "tcp",
-              "down" if client_args.reverse else "up",
-              client_addr),
-              flush=True)
-
         shared_run_mode = multiprocessing.Value('i', const.RUN_MODE_CALIBRATING)
         shared_udp_sending_rate_pps = multiprocessing.Value('d', const.UDP_DEFAULT_INITIAL_RATE)
 
@@ -137,8 +127,12 @@ def server_mainline(args):
             thread_list = []
             thread_list.append(data_receiver_process)
 
+            tcp_helper.send_setup_complete_message_to_client(control_conn)
+
         if client_args.reverse:
             # direction down
+
+            tcp_helper.send_setup_complete_message_to_client(control_conn)
 
             control_receiver_process = multiprocessing.Process(
                 name = "controlreceiver",
@@ -162,6 +156,12 @@ def server_mainline(args):
             thread_list = []
             thread_list.append(control_receiver_process)
             thread_list.append(data_sender_process)
+
+        print("test running, {} {} from client {}".format(
+              "udp" if client_args.udp else "tcp",
+              "down" if client_args.reverse else "up",
+              client_addr),
+              flush=True)
 
         while True:
             if util.threads_are_running(thread_list):

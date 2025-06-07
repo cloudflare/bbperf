@@ -102,11 +102,6 @@ def client_mainline(args):
 
     if args.verbosity:
         print("connection setup complete: message received", flush=True)
-        print("test running, {} {} to server {}".format(
-              "udp" if args.udp else "tcp",
-              "down" if args.reverse else "up",
-              server_addr),
-              flush=True)
 
     shared_run_mode = multiprocessing.Value('i', const.RUN_MODE_CALIBRATING)
     shared_udp_sending_rate_pps = multiprocessing.Value('d', const.UDP_DEFAULT_INITIAL_RATE)
@@ -165,6 +160,13 @@ def client_mainline(args):
         thread_list = []
         thread_list.append(data_receiver_process)
         thread_list.append(control_receiver_process)
+
+    if args.verbosity:
+        print("test running, {} {} to server {}".format(
+              "udp" if args.udp else "tcp",
+              "down" if args.reverse else "up",
+              server_addr),
+              flush=True)
 
     # output loop
 
