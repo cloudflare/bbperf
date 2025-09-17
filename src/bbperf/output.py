@@ -146,9 +146,11 @@ def print_output(s1):
             excess = 0
         new_entry = {
             "sent_time_sec": r_record["r_pkt_sent_time_sec"],
+            "received_time_sec": r_record["r_pkt_received_time_sec"],
             "loaded_rtt_ms": r_record["rtt_ms"],
             "sender_throughput_rate_mbps": r_record["sender_interval_rate_mbps"],
             "receiver_throughput_rate_mbps": r_record["receiver_interval_rate_mbps"],
+            "bdp_bytes": bdp_bytes,
             "excess_buffered_bytes": excess,
             "receiver_pps": r_record["receiver_pps"],
             "pkt_loss_percent": r_record["interval_dropped_percent"],
