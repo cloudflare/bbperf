@@ -62,7 +62,8 @@ Should `bbperf` not detect any valid data samples for 60 seconds after calibrati
 
 ```
 $ bbperf.py --help
-usage: bbperf [-h] [-s] [-c SERVER_ADDR] [-p SERVER_PORT] [-u] [-R] [--max-ramp-time SECONDS] [-t SECONDS] [-v] [-q] [-J JSON_FILE] [-g] [-k] [-B BIND_ADDR]
+usage: bbperf.py [-h] [-s] [-c SERVER_ADDR] [-p SERVER_PORT] [-u] [-R] [--max-ramp-time SECONDS] [-t SECONDS] [-v] [-q]
+                 [-J JSON_FILE] [-g] [-k] [-B BIND_ADDR] [--local-data-port LOCAL_DATA_PORT]
 
 bbperf: end to end performance and bufferbloat measurement tool
 
@@ -76,7 +77,7 @@ options:
   -u, --udp             run in UDP mode (default: TCP mode)
   -R, --reverse         data flow in download direction (server to client)
   --max-ramp-time SECONDS
-                        max duration in seconds before collecting data samples (tcp default: 5, udp default: 20)
+                        max duration in seconds before collecting data samples (tcp default: 5, udp default: 10)
   -t SECONDS, --time SECONDS
                         duration in seconds to collect valid data samples (default: 20)
   -v, --verbosity       increase output verbosity (can be repeated)
@@ -87,6 +88,8 @@ options:
   -k, --keep            keep data file
   -B BIND_ADDR, --bind BIND_ADDR
                         bind server sockets to address
+  --local-data-port LOCAL_DATA_PORT
+                        local port for data connection (default: ephemeral)
 ```
 
 Output from `bbperf` includes the following information:

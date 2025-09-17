@@ -84,6 +84,12 @@ def mainline():
         default="0.0.0.0",
         help="bind server sockets to address")
 
+    parser.add_argument("--local-data-port",
+        metavar="LOCAL_DATA_PORT",
+        type=int,
+        default=0,
+        help="local port for data connection (default: ephemeral)")
+
     args = parser.parse_args()
 
     util.validate_and_finalize_args(args)

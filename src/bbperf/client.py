@@ -85,6 +85,9 @@ def client_mainline(args):
 
     if args.udp:
         data_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # bind client data connection to specific local port
+        if args.local_data_port > 0:
+            data_sock.bind(('0.0.0.0', args.local_data_port))
         data_sock.settimeout(const.SOCKET_TIMEOUT_SEC)
         # must send something just to bind a local addr
         data_sock.sendto("foo".encode(), ("127.0.0.1", 65535))
@@ -121,6 +124,9 @@ def client_mainline(args):
 
     else:
         data_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # bind client data connection to specific local port
+        if args.local_data_port > 0:
+            data_sock.bind(('0.0.0.0', args.local_data_port))
         tcp_helper.set_congestion_control(data_sock)
         tcp_helper.set_tcp_notsent_lowat(data_sock)
         data_sock.connect(server_addr)
