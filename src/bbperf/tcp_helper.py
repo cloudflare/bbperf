@@ -2,6 +2,7 @@
 # Licensed under the Apache 2.0 license found in the LICENSE file or at https://www.apache.org/licenses/LICENSE-2.0
 
 import socket
+import struct
 
 from .exceptions import PeerDisconnectedException
 
@@ -38,17 +39,23 @@ def get_congestion_control(data_sock):
     return cc_algo_str
 
 
+# TODO will be turning this into a command line option
+CC_ALGO="cubic"
+
+
 def set_congestion_control(data_sock):
-    if get_congestion_control(data_sock) == "cubic":
+    if get_congestion_control(data_sock) == CC_ALGO:
         # already set, nothing to do here
         return
 
-    data_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_CONGESTION, "cubic".encode())
+    data_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_CONGESTION, CC_ALGO.encode())
 
     cc_algo_str = get_congestion_control(data_sock)
-    if cc_algo_str != "cubic":
+    if cc_algo_str != CC_ALGO:
         raise Exception("ERROR: unexpected congestion control in effect: {}".format(cc_algo_str))
 
 
 def set_tcp_notsent_lowat(data_sock):
-    data_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NOTSENT_LOWAT, (1024 * 1024))
+    lowat_value = 128 * 1024
+    lowat_val_bytes = struct.pack('I', lowat_value)
+    data_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NOTSENT_LOWAT, lowat_val_bytes)
