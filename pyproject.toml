@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bbperf"
-version = "0.0.25"
+version = "0.0.26"
 authors = [
   { name="Mike Freemon", email="mfreemon@cloudflare.com" },
 ]
