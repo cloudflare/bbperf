@@ -127,7 +127,7 @@ def client_mainline(args):
         # bind client data connection to specific local port
         if args.local_data_port > 0:
             data_sock.bind(('0.0.0.0', args.local_data_port))
-        tcp_helper.set_congestion_control(data_sock)
+        tcp_helper.set_congestion_control(args, data_sock)
         tcp_helper.set_tcp_notsent_lowat(data_sock)
         data_sock.connect(server_addr)
         data_sock.settimeout(const.SOCKET_TIMEOUT_SEC)

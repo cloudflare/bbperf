@@ -90,6 +90,11 @@ def mainline():
         default=0,
         help="local port for data connection (default: ephemeral)")
 
+    parser.add_argument("-C", "--congestion",
+        metavar="CC_ALGORITHM",
+        default="cubic",
+        help="congestion control algorithm (default: cubic)")
+
     args = parser.parse_args()
 
     util.validate_and_finalize_args(args)

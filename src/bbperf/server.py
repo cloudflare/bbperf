@@ -115,7 +115,7 @@ def server_mainline(args):
 
             data_sock, _ = listen_sock.accept()
             data_sock.settimeout(const.SOCKET_TIMEOUT_SEC)
-            tcp_helper.set_congestion_control(data_sock)
+            tcp_helper.set_congestion_control(client_args, data_sock)
             tcp_helper.set_tcp_notsent_lowat(data_sock)
             client_data_addr = data_sock.getpeername()
             if client_args.verbosity:

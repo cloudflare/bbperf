@@ -62,8 +62,8 @@ Should `bbperf` not detect any valid data samples for 60 seconds after calibrati
 
 ```
 $ bbperf.py --help
-usage: bbperf.py [-h] [-s] [-c SERVER_ADDR] [-p SERVER_PORT] [-u] [-R] [--max-ramp-time SECONDS] [-t SECONDS] [-v] [-q]
-                 [-J JSON_FILE] [-g] [-k] [-B BIND_ADDR] [--local-data-port LOCAL_DATA_PORT]
+usage: bbperf.py [-h] [-s] [-c SERVER_ADDR] [-p SERVER_PORT] [-u] [-R] [--max-ramp-time SECONDS] [-t SECONDS] [-v]
+                 [-q] [-J JSON_FILE] [-g] [-k] [-B BIND_ADDR] [--local-data-port LOCAL_DATA_PORT] [-C CC_ALGORITHM]
 
 bbperf: end to end performance and bufferbloat measurement tool
 
@@ -90,6 +90,8 @@ options:
                         bind server sockets to address
   --local-data-port LOCAL_DATA_PORT
                         local port for data connection (default: ephemeral)
+  -C CC_ALGORITHM, --congestion CC_ALGORITHM
+                        congestion control algorithm (default: cubic)
 ```
 
 Output from `bbperf` includes the following information:

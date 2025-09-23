@@ -20,6 +20,9 @@ def validate_and_finalize_args(args):
     if args.verbosity and args.quiet:
         raise Exception("ERROR: cannot specify both verbosity and quiet")
 
+    if args.congestion not in [ "cubic", "bbr"]:
+        raise Exception("ERROR: congestion control algorithm must be either cubic or bbr, but found {}".format(args.congestion))
+
     # set max_run_time_failsafe_sec
     # never run longer than this under any circumstances
     max_run_time_failsafe_sec = const.MAX_DURATION_CALIBRATION_TIME_SEC

@@ -39,19 +39,15 @@ def get_congestion_control(data_sock):
     return cc_algo_str
 
 
-# TODO will be turning this into a command line option
-CC_ALGO="cubic"
-
-
-def set_congestion_control(data_sock):
-    if get_congestion_control(data_sock) == CC_ALGO:
+def set_congestion_control(client_args, data_sock):
+    if get_congestion_control(data_sock) == client_args.congestion:
         # already set, nothing to do here
         return
 
-    data_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_CONGESTION, CC_ALGO.encode())
+    data_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_CONGESTION, client_args.congestion.encode())
 
     cc_algo_str = get_congestion_control(data_sock)
-    if cc_algo_str != CC_ALGO:
+    if cc_algo_str != client_args.congestion:
         raise Exception("ERROR: unexpected congestion control in effect: {}".format(cc_algo_str))
 
 
