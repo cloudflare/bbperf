@@ -23,7 +23,7 @@ set output pngfile1
 # name - prefix
 stats datafile1 using 1 nooutput name "XRANGE"
 
-set multiplot title "bbperf UDP ".datafile1 layout 5,1
+set multiplot title graphtitle layout 5,1
 
 set lmargin 12
 

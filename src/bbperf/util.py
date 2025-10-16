@@ -23,6 +23,9 @@ def validate_and_finalize_args(args):
     if args.congestion not in [ "cubic", "bbr"]:
         raise Exception("ERROR: congestion control algorithm must be either cubic or bbr, but found {}".format(args.congestion))
 
+    if args.graph_file and (not args.graph_file.endswith(".png")):
+        raise Exception("ERROR: argument --graph-file must end with \".png\"")
+
     # set max_run_time_failsafe_sec
     # never run longer than this under any circumstances
     max_run_time_failsafe_sec = const.MAX_DURATION_CALIBRATION_TIME_SEC

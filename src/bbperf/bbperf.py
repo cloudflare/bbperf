@@ -72,7 +72,12 @@ def mainline():
     parser.add_argument("-g", "--graph",
         action="store_true",
         default=False,
-        help="generate graph (requires gnuplot)")
+        help="generate graph and save in tmp file (requires gnuplot)")
+
+    parser.add_argument("--graph-file",
+        metavar="GRAPH_FILE",
+        default=None,
+        help="generate graph and save in the specified file (requires gnuplot)")
 
     parser.add_argument("-k", "--keep",
         action="store_true",

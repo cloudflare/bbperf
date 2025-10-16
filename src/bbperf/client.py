@@ -8,8 +8,8 @@ import time
 import queue
 import socket
 import uuid
-import json
 import ipaddress
+import shutil
 
 from . import data_sender_thread
 from . import udp_string_sender_thread
@@ -261,9 +261,22 @@ def client_mainline(args):
     graphdatafilename = output.get_graph_data_file_name()
     rawdatafilename = output.get_raw_data_file_name()
 
-    if args.graph and not args.quiet:
-        graph.create_graph(args, graphdatafilename)
-        print("created graph: {}".format(graphdatafilename + ".png"), flush=True)
+    if (args.graph or args.graph_file) and not args.quiet:
+        pngfilename = graphdatafilename + ".png"
+
+        graph.create_graph(args, graphdatafilename, pngfilename)
+
+        if args.graph_file:
+            try:
+                # move the pngfile to the user specified destination
+                shutil.move(pngfilename, args.graph_file)
+                print("created graph: {}".format(args.graph_file), flush=True)
+
+            except Exception as e:
+                print("ERROR: during move of graph png file: {}".format(e), flush=True)
+
+        else:
+            print("created graph: {}".format(pngfilename), flush=True)
 
     if args.keep and not args.quiet:
         print("keeping graph data file: {}".format(graphdatafilename), flush=True)

@@ -6,16 +6,24 @@ import argparse
 import subprocess
 
 
-def create_graph(args, datafile1):
+def create_graph(args, datafile1, pngfilename):
+
+    if args.graph_file:
+        filename_in_title = args.graph_file
+    else:
+        filename_in_title = pngfilename
 
     this_script_dir = os.path.dirname(os.path.abspath(__file__))
 
     if args.udp:
         gp_file = this_script_dir + "/udp-graph.gp"
+        graph_title = "bbperf UDP {}".format(filename_in_title)
     else:
         gp_file = this_script_dir + "/tcp-graph.gp"
+        graph_title = "bbperf TCP {}".format(filename_in_title)
 
-    gnuplot_script = "datafile1 = \"" + datafile1 + "\" ; load \"" + gp_file + "\""
+    gnuplot_script = "datafile1 = \"{}\" ; graphtitle = \"{}\" ; load \"{}\"".format(
+        datafile1, graph_title, gp_file)
 
     result = subprocess.run(["gnuplot", "-e", gnuplot_script], capture_output=True)
 
