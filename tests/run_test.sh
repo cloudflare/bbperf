@@ -3,31 +3,39 @@
 # Copyright (c) 2024 Cloudflare, Inc.
 # Licensed under the Apache 2.0 license found in the LICENSE file or at https://www.apache.org/licenses/LICENSE-2.0
 
-set -x
+do_run() {
+  ARGS=$1
 
-SERVER_ADDR=127.0.0.1
+  #bbperf -c $ARGS
+  sudo ip netns exec ns1 bash -c "cd $HOME/bbperf/src ; python3 -m bbperf.bbperf $ARGS"
+}
+
+#SERVER_ADDR=127.0.0.1
+SERVER_ADDR=10.88.30.2
 
 EXTRAARGS="-v -t 10"
 
-bbperf -c $SERVER_ADDR $EXTRAARGS
+set -x
 
-bbperf -c $SERVER_ADDR $EXTRAARGS -R
+do_run "-c $SERVER_ADDR $EXTRAARGS"
 
-bbperf -c $SERVER_ADDR $EXTRAARGS -u
+do_run "-c $SERVER_ADDR $EXTRAARGS -R"
 
-bbperf -c $SERVER_ADDR $EXTRAARGS -u -R
+do_run "-c $SERVER_ADDR $EXTRAARGS -u"
+
+do_run "-c $SERVER_ADDR $EXTRAARGS -u -R"
 
 EXTRAARGS="-t 10"
 
-bbperf -c $SERVER_ADDR $EXTRAARGS
+do_run "-c $SERVER_ADDR $EXTRAARGS"
 
-bbperf -c $SERVER_ADDR $EXTRAARGS -R
+do_run "-c $SERVER_ADDR $EXTRAARGS -R"
 
-bbperf -c $SERVER_ADDR $EXTRAARGS -u
+do_run "-c $SERVER_ADDR $EXTRAARGS -u"
 
-bbperf -c $SERVER_ADDR $EXTRAARGS -u -R
+do_run "-c $SERVER_ADDR $EXTRAARGS -u -R"
 
-bbperf -c $SERVER_ADDR $EXTRAARGS -J /tmp/foo578439759837.out
+do_run "-c $SERVER_ADDR $EXTRAARGS -J /tmp/foo578439759837.out"
 
 head /tmp/foo578439759837.out
 tail /tmp/foo578439759837.out
