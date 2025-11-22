@@ -24,6 +24,7 @@ Create tar.gz and whl files in dist directory:
     git push origin
     git push origin --tags
 
+    rm dist/*
     python3 -m build
 
 UPLOAD
