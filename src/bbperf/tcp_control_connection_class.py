@@ -4,6 +4,7 @@
 import json
 import argparse
 import socket
+import select
 
 from . import const
 from . import util
@@ -20,8 +21,6 @@ class TcpControlConnectionClass:
         self.args = None
 
         self.read_buffer = bytearray()
-
-        control_sock.settimeout(const.SOCKET_TIMEOUT_SEC)
 
         # set TCP_NODELAY because the control messages back to the
         # sender from the data receiver are part of the RTT measurement
@@ -215,6 +214,11 @@ class TcpControlConnectionClass:
 
 
     def recv(self, max_bytes_to_read):
+        # block here because we don't want the recv() to block indefinitely
+        rlist, _, _ = select.select( [self.control_sock], [], [], const.SOCKET_TIMEOUT_SEC)
+
+        if len(rlist) == 0:
+            raise Exception("ERROR: select() timed out")
 
         recv_bytes = self.control_sock.recv(max_bytes_to_read)
 
