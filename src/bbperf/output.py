@@ -21,6 +21,8 @@ print_header3 = True
 relative_start_time_sec = None
 json_output = None
 unloaded_latency_rtt_ms = None
+last_total_pkts_sent = 0
+last_total_pkts_dropped = 0
 
 
 def init(args0):
@@ -90,6 +92,8 @@ def print_output(s1):
     global print_header3
     global relative_start_time_sec
     global unloaded_latency_rtt_ms
+    global last_total_pkts_sent
+    global last_total_pkts_dropped
 
     write_raw_data_to_file(s1)
 
@@ -165,10 +169,25 @@ def print_output(s1):
                 print("  sent_time   recv_time  sender_Mbps receiver_Mbps sender_pps receiver_pps unloaded_rtt_ms rtt_ms BDP_bytes buffered_bytes bloat pkts_dropped  drop%", flush=True)
                 print_header2 = False
 
-            if r_record["interval_dropped_percent"] < 0:
-                dropped_percent_str = "   n/a"
+            if args.udp:
+                curr_total_pkts_sent = r_record["r_sender_total_pkts_sent"]
+                curr_total_pkts_dropped = r_record["total_dropped"]
+
+                delta_pkts_sent = curr_total_pkts_sent - last_total_pkts_sent
+                delta_pkts_dropped = curr_total_pkts_dropped - last_total_pkts_dropped
+
+                if delta_pkts_dropped < 0:
+                    delta_pkts_dropped = 0
+
+                delta_pkts_dropped_percent = (delta_pkts_dropped * 100) / delta_pkts_sent
+                delta_pkts_dropped_percent_str = "{:6.3f}%".format(delta_pkts_dropped_percent)
+
+                last_total_pkts_sent = curr_total_pkts_sent
+                last_total_pkts_dropped = curr_total_pkts_dropped
             else:
-                dropped_percent_str = "{:6.3f}%".format(r_record["interval_dropped_percent"])
+                delta_pkts_dropped = -1
+                delta_pkts_dropped_percent_str = "   n/a"
+
 
             print("{:11.6f} {:11.6f} {:11.3f}   {:11.3f}   {:8d}     {:8d}    {:8.3f}   {:9.3f} {:9d}    {:9d} {:6.1f}x   {:6d}    {}".format(
                 relative_pkt_sent_time_sec,
@@ -182,8 +201,8 @@ def print_output(s1):
                 bdp_bytes,
                 r_record["buffered_bytes"],
                 bloat_factor,
-                r_record["interval_dropped"],
-                dropped_percent_str
+                delta_pkts_dropped,
+                delta_pkts_dropped_percent_str
                 ),
                 flush=True)
 
