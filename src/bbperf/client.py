@@ -279,11 +279,17 @@ def client_mainline(args):
         else:
             print("created graph: {}".format(pngfilename), flush=True)
 
-    if args.keep and not args.quiet:
-        print("keeping graph data file: {}".format(graphdatafilename), flush=True)
-        print("keeping raw data file: {}".format(rawdatafilename), flush=True)
-    else:
-        output.delete_data_files()
+    if args.graph_data_file:
+        shutil.copy(graphdatafilename, args.graph_data_file)
+        if not args.quiet:
+            print("keeping graph data file: {}".format(args.graph_data_file), flush=True)
+
+    if args.raw_data_file:
+        shutil.copy(rawdatafilename, args.raw_data_file)
+        if not args.quiet:
+            print("keeping raw data file: {}".format(args.raw_data_file), flush=True)
+
+    output.delete_tmp_data_files()
 
     if args.verbosity:
         print("test complete, exiting")

@@ -79,10 +79,15 @@ def mainline():
         default=None,
         help="generate graph and save in the specified file (requires gnuplot)")
 
-    parser.add_argument("-k", "--keep",
-        action="store_true",
-        default=False,
-        help="keep data file")
+    parser.add_argument("--graph-data-file",
+        metavar="GRAPH_DATA_FILE",
+        default=None,
+        help="save graph data to the specified file")
+
+    parser.add_argument("--raw-data-file",
+        metavar="RAW_DATA_FILE",
+        default=None,
+        help="save raw data to the specified file")
 
     parser.add_argument("-B", "--bind",
         metavar="BIND_ADDR",

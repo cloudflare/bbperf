@@ -63,7 +63,8 @@ Should `bbperf` not detect any valid data samples for 60 seconds after calibrati
 ```
 $ bbperf.py --help
 usage: bbperf.py [-h] [-s] [-c SERVER_ADDR] [-p SERVER_PORT] [-u] [-R] [--max-ramp-time SECONDS] [-t SECONDS] [-v] [-q] [-J JSON_FILE] [-g]
-                 [--graph-file GRAPH_FILE] [-k] [-B BIND_ADDR] [--local-data-port LOCAL_DATA_PORT] [-C CC_ALGORITHM]
+                 [--graph-file GRAPH_FILE] [--graph-data-file GRAPH_DATA_FILE] [--raw-data-file RAW_DATA_FILE] [-B BIND_ADDR]
+                 [--local-data-port LOCAL_DATA_PORT] [-C CC_ALGORITHM]
 
 bbperf: end to end performance and bufferbloat measurement tool
 
@@ -87,7 +88,10 @@ options:
   -g, --graph           generate graph and save in tmp file (requires gnuplot)
   --graph-file GRAPH_FILE
                         generate graph and save in the specified file (requires gnuplot)
-  -k, --keep            keep data file
+  --graph-data-file GRAPH_DATA_FILE
+                        save graph data to the specified file
+  --raw-data-file RAW_DATA_FILE
+                        save raw data to the specified file
   -B BIND_ADDR, --bind BIND_ADDR
                         bind server sockets to address
   --local-data-port LOCAL_DATA_PORT

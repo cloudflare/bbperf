@@ -61,7 +61,7 @@ def term():
     json_output.write_output()
 
 
-def delete_data_files():
+def delete_tmp_data_files():
     if args.verbosity:
         print("deleting graph data file: {}".format(tmpfile1.name), flush=True)
         print("deleting raw data file: {}".format(tmpfile2.name), flush=True)
