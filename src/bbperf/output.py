@@ -121,12 +121,13 @@ def print_output(s1):
             bloat_factor = 0
 
         if print_header3:
-            lineout = "sent_time recv_time sender_pps sender_Mbps receiver_pps receiver_Mbps unloaded_rtt_ms rtt_ms BDP_bytes buffered_bytes bloat_factor pkts_dropped pkts_dropped_percent"
+            lineout = "sent_epoch sent_time recv_time sender_pps sender_Mbps receiver_pps receiver_Mbps unloaded_rtt_ms rtt_ms BDP_bytes buffered_bytes bloat_factor pkts_dropped pkts_dropped_percent"
             write_graph_data_to_file(lineout)
             print_header3 = False
 
         # write to file the same data and same rate as what we are receiving over the control connection
-        lineout = "{} {} {} {} {} {} {} {} {} {} {} {} {}".format(
+        lineout = "{} {} {} {} {} {} {} {} {} {} {} {} {} {}".format(
+            r_record["r_pkt_sent_time_sec"],
             relative_pkt_sent_time_sec,
             relative_pkt_received_time_sec,
             r_record["sender_pps"],
@@ -149,6 +150,7 @@ def print_output(s1):
         if excess < 0:
             excess = 0
         new_entry = {
+            "sent_time_epoch_sec": r_record["r_pkt_sent_time_sec"],
             "sent_time_sec": r_record["r_pkt_sent_time_sec"],
             "received_time_sec": r_record["r_pkt_received_time_sec"],
             "loaded_rtt_ms": r_record["rtt_ms"],

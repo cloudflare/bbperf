@@ -18,10 +18,10 @@ set style data lines
 set terminal pngcairo size 1200,1000 noenhanced
 set output pngfile1
 
-# generate stats for column 2
+# generate stats for column
 # nooutput - do not sent to "screen"
 # name - prefix
-stats datafile1 using 1 nooutput name "XRANGE"
+stats datafile1 using 2 nooutput name "XRANGE"
 
 set multiplot title graphtitle layout 3,1
 
@@ -32,18 +32,18 @@ set lmargin 12
 
 set ylabel "Mbps"
 
-plot datafile1 using ($1-XRANGE_min):6 title "receiver throughput (L7)" lw 2 lc 6, \
-     ""        using ($1-XRANGE_min):4 title "sender throughput (L7)"   lw 2 lc 1
+plot datafile1 using ($2-XRANGE_min):6 title "receiver throughput (L7)" lw 2 lc 6, \
+     ""        using ($2-XRANGE_min):4 title "sender throughput (L7)"   lw 2 lc 1
 
 set ylabel "ms"
 
-plot datafile1 using ($1-XRANGE_min):7 title "unloaded RTT (L7)" lw 2 lc 1, \
-     ""        using ($1-XRANGE_min):8 title "RTT (L7)"          lw 2 lc 6
+plot datafile1 using ($2-XRANGE_min):7 title "unloaded RTT (L7)" lw 2 lc 1, \
+     ""        using ($2-XRANGE_min):8 title "RTT (L7)"          lw 2 lc 6
 
 set ylabel "bytes"
 
-plot datafile1 using ($1-XRANGE_min):9  title "BDP"           lw 2 lc 1, \
-     ""        using ($1-XRANGE_min):10 title "buffered data" lw 2 lc 6
+plot datafile1 using ($2-XRANGE_min):9  title "BDP"           lw 2 lc 1, \
+     ""        using ($2-XRANGE_min):10 title "buffered data" lw 2 lc 6
 
 unset multiplot
 

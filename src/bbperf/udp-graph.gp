@@ -18,10 +18,10 @@ set style data lines
 set terminal pngcairo size 1200,1300 noenhanced
 set output pngfile1
 
-# generate stats for column 2
+# generate stats for column
 # nooutput - do not sent to "screen"
 # name - prefix
-stats datafile1 using 1 nooutput name "XRANGE"
+stats datafile1 using 2 nooutput name "XRANGE"
 
 set multiplot title graphtitle layout 5,1
 
@@ -32,27 +32,27 @@ set lmargin 12
 
 set ylabel "pps"
 
-plot datafile1 using ($1-XRANGE_min):5 title "receiver pps" lw 2 lc 6, \
-     ""        using ($1-XRANGE_min):3 title "sender pps"   lw 2 lc 1 dt 2
+plot datafile1 using ($2-XRANGE_min):5 title "receiver pps" lw 2 lc 6, \
+     ""        using ($2-XRANGE_min):3 title "sender pps"   lw 2 lc 1 dt 2
 
 set ylabel "Mbps"
 
-plot datafile1 using ($1-XRANGE_min):6 title "receiver throughput" lw 2 lc 6, \
-     ""        using ($1-XRANGE_min):4 title "sender throughput"   lw 2 lc 1 dt 2
+plot datafile1 using ($2-XRANGE_min):6 title "receiver throughput" lw 2 lc 6, \
+     ""        using ($2-XRANGE_min):4 title "sender throughput"   lw 2 lc 1 dt 2
 
 set ylabel "ms"
 
-plot datafile1 using ($1-XRANGE_min):7 title "unloaded RTT" lw 2 lc 1, \
-     ""        using ($1-XRANGE_min):8 title "RTT"          lw 2 lc 6
+plot datafile1 using ($2-XRANGE_min):7 title "unloaded RTT" lw 2 lc 1, \
+     ""        using ($2-XRANGE_min):8 title "RTT"          lw 2 lc 6
 
 set ylabel "bytes"
 
-plot datafile1 using ($1-XRANGE_min):9  title "BDP"           lw 2 lc 1, \
-     ""        using ($1-XRANGE_min):10 title "buffered data" lw 2 lc 6
+plot datafile1 using ($2-XRANGE_min):9  title "BDP"           lw 2 lc 1, \
+     ""        using ($2-XRANGE_min):10 title "buffered data" lw 2 lc 6
 
 set ylabel "percent"
 
-plot datafile1 using ($1-XRANGE_min):13 title "pkt loss %"  lw 2 lc 6
+plot datafile1 using ($2-XRANGE_min):13 title "pkt loss %"  lw 2 lc 6
 
 unset multiplot
 
