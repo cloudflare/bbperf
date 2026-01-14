@@ -20,8 +20,8 @@ def validate_and_finalize_args(args):
     if args.verbosity and args.quiet:
         raise Exception("ERROR: cannot specify both verbosity and quiet")
 
-    if args.congestion not in [ "cubic", "bbr"]:
-        raise Exception("ERROR: congestion control algorithm must be either cubic or bbr, but found {}".format(args.congestion))
+    if args.congestion not in [ "cubic", "bbr", "reno"]:
+        raise Exception("ERROR: congestion control algorithm is invalid: {}".format(args.congestion))
 
     if args.graph_file and (not args.graph_file.endswith(".png")):
         raise Exception("ERROR: argument --graph-file must end with \".png\"")

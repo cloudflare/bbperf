@@ -11,8 +11,6 @@ from . import util
 from . import const
 
 def mainline():
-    print("bbperf version {}".format(const.BBPERF_VERSION), flush=True)
-
     parser = argparse.ArgumentParser(description="bbperf: end to end performance and bufferbloat measurement tool")
 
     parser.add_argument("-s", "--server",
@@ -110,8 +108,17 @@ def mainline():
     util.validate_and_finalize_args(args)
 
     if args.client:
+
+        if args.udp:
+            print("bbperf version {} (protocol: UDP)".format(const.BBPERF_VERSION), flush=True)
+        else:
+            print("bbperf version {} (protocol: TCP, congestion control: {})".format(const.BBPERF_VERSION, args.congestion), flush=True)
+
         client.client_mainline(args)
     else:
+
+        print("bbperf version {} (bbperf server)".format(const.BBPERF_VERSION), flush=True)
+
         server.server_mainline(args)
 
 
