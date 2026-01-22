@@ -71,13 +71,15 @@ def run(args, data_sock, peer_addr, shared_run_mode, shared_udp_sending_rate_pps
         if args.udp:
             ba.extend(const.PAYLOAD_1K)
         elif is_calibrated:
-            ba.extend(const.PAYLOAD_128K)
+            ba.extend(const.PAYLOAD_1K)
         else:
             ba.extend(const.PAYLOAD_1K)
 
         # send an entire batch
 
         batch_size = udp_batch_size if args.udp else 1
+
+        doing_select = False
 
         try:
             batch_counter = 0
@@ -91,8 +93,10 @@ def run(args, data_sock, peer_addr, shared_run_mode, shared_udp_sending_rate_pps
                 else:
                     # tcp
                     # we use select to take advantage of tcp_notsent_lowat
-                    # timeout is 20 seconds
-                    _, _, _ = select.select( [], [data_sock], [], 20.0)
+                    # timeout is 1 ms so interval end time is run on the correct interval
+                    doing_select = True
+                    _, _, _ = select.select( [], [data_sock], [], 0.001)
+                    doing_select = False
                     num_bytes_sent = data_sock.send(ba)
 
                 if num_bytes_sent <= 0:
@@ -120,9 +124,10 @@ def run(args, data_sock, peer_addr, shared_run_mode, shared_udp_sending_rate_pps
             continue
 
         except socket.timeout:
-            error_msg = "FATAL: data_sender_thread: socket timeout"
-            print(error_msg, flush=True)
-            raise Exception(error_msg)
+            if not doing_select:
+                error_msg = "FATAL: data_sender_thread: socket timeout"
+                print(error_msg, flush=True)
+                raise Exception(error_msg)
 
         # end of batch loop
 
