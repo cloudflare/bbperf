@@ -71,7 +71,7 @@ def run(args, data_sock, peer_addr, shared_run_mode, shared_udp_sending_rate_pps
         if args.udp:
             ba.extend(const.PAYLOAD_1K)
         elif is_calibrated:
-            ba.extend(const.PAYLOAD_1K)
+            ba.extend(const.PAYLOAD_4K)
         else:
             ba.extend(const.PAYLOAD_1K)
 
