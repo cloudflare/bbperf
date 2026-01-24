@@ -4,7 +4,6 @@
 import numpy
 
 from . import const
-from . import util
 
 # this is a simple congestion control algorithm for the udp test
 class UdpRateManagerClass:
@@ -15,6 +14,7 @@ class UdpRateManagerClass:
         self.shared_udp_sending_rate_pps = shared_udp_sending_rate_pps
         self.receiver_pps_list = []
         self.last_new_rate = 0
+        self.initial_climb = True
 
     # control receiver calls this with interval pps (every 0.1 seconds)
     def update(self, r_record):
@@ -30,9 +30,24 @@ class UdpRateManagerClass:
         if len(self.receiver_pps_list) > 10:
             self.receiver_pps_list = self.receiver_pps_list[1:]
 
-        receiver_pps_p90 = numpy.percentile(self.receiver_pps_list, 90)
+        receiver_pps_p50 = numpy.percentile(self.receiver_pps_list, 50)
 
-        new_rate = int(receiver_pps_p90 * 1.2)
+        # should we drop out of initial climb?
+        if self.initial_climb:
+            if len(self.receiver_pps_list) == 10:
+                num_rate_decreases = 0
+                for idx in range(len(self.receiver_pps_list)):
+                    if (idx > 0) and (self.receiver_pps_list[idx - 1] > self.receiver_pps_list[idx]):
+                        num_rate_decreases += 1
+                if num_rate_decreases > 2:
+                    self.initial_climb = False
+
+        if self.initial_climb:
+            # initial climb at 20%
+            new_rate = int(receiver_pps_p50 * 1.2)
+        else:
+            # maintain steady state
+            new_rate = int(receiver_pps_p50 * 1.05)
 
         if new_rate < const.UDP_MIN_RATE:
             new_rate = const.UDP_MIN_RATE
@@ -47,11 +62,12 @@ class UdpRateManagerClass:
             return
 
         if self.args.verbosity > 1:
-            print("UdpRateManager: update: receiver pps {:6d} old rate {:6d} new rate {:6d} delta {:7d}".format(
+            print("UdpRateManager: update: receiver pps {:6d} old rate {:6d} new rate {:6d} delta {:7d} initial_climb: {}".format(
                 r_record["receiver_pps"],
                 self.shared_udp_sending_rate_pps.value,
                 new_rate,
-                delta_rate),
+                delta_rate,
+                self.initial_climb),
                 flush=True
             )
 

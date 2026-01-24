@@ -152,8 +152,9 @@ def run(args, data_sock, peer_addr, shared_run_mode, shared_udp_sending_rate_pps
         if not is_calibrated:
             time.sleep(0.2)
             if args.udp:
-                # initialize udp batch start time here in case next loop is batch processing
+                # initialize udp batch start here in case next loop is batch processing
                 current_udp_batch_start_time = time.time()
+                current_udp_batch_start_total_send_counter = total_send_counter
             continue
 
         # normal end of test
@@ -165,14 +166,25 @@ def run(args, data_sock, peer_addr, shared_run_mode, shared_udp_sending_rate_pps
 
         # pause between udp batches if necessary
         if args.udp:
-            delay_sec = const.UDP_DELAY_BETWEEN_BATCH_STARTS - (curr_time_sec - current_udp_batch_start_time)
+            this_batch_pkts_sent = total_send_counter - current_udp_batch_start_total_send_counter
+
+            this_batch_actual_time_sec = curr_time_sec - current_udp_batch_start_time
+
+            target_seconds_per_packet = 1.0 / shared_udp_sending_rate_pps.value
+
+            this_batch_should_have_taken_time = this_batch_pkts_sent * target_seconds_per_packet
+
+            delay_sec = this_batch_should_have_taken_time - this_batch_actual_time_sec
+
             if delay_sec < 0:
                 num_negative_delay += 1
                 if (num_negative_delay % const.UDP_NEGATIVE_DELAY_BETWEEN_BATCHES_WARNING_EVERY) == 0:
                     print("WARNING: udp sender is cpu constrained, results may be invalid: {}".format(num_negative_delay), flush=True)
             elif delay_sec > 0:
                 time.sleep(delay_sec)
-            current_udp_batch_start_time += const.UDP_DELAY_BETWEEN_BATCH_STARTS
+
+            current_udp_batch_start_time += this_batch_should_have_taken_time
+            current_udp_batch_start_total_send_counter = total_send_counter
 
 
     # send STOP message

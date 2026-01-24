@@ -44,7 +44,7 @@ def validate_and_finalize_args(args):
 
 def convert_udp_pps_to_batch_size(packets_per_sec):
 
-    batch_size = int(packets_per_sec / const.UDP_BATCHES_PER_SECOND)
+    batch_size = int(packets_per_sec / const.UDP_DESIRED_BATCHES_PER_SECOND)
 
     if batch_size < 1:
         batch_size = 1
