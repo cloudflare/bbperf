@@ -51,7 +51,6 @@ def set_congestion_control(client_args, data_sock):
         raise Exception("ERROR: unexpected congestion control in effect: {}".format(cc_algo_str))
 
 
-def set_tcp_notsent_lowat(data_sock):
-    lowat_value = 128 * 1024
-    lowat_val_bytes = struct.pack('I', lowat_value)
+def set_tcp_notsent_lowat(data_sock, tcp_notsent_lowat_value):
+    lowat_val_bytes = struct.pack('I', tcp_notsent_lowat_value)
     data_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NOTSENT_LOWAT, lowat_val_bytes)

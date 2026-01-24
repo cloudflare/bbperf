@@ -103,6 +103,12 @@ def mainline():
         default="cubic",
         help="congestion control algorithm (default: cubic)")
 
+    parser.add_argument("--tcp-notsent-lowat",
+        metavar="BYTES",
+        type=int,
+        default=131072,
+        help="net.ipv4.tcp_notsent_lowat (default: 131072)")
+
     args = parser.parse_args()
 
     util.validate_and_finalize_args(args)
