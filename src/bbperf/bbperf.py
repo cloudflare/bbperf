@@ -118,7 +118,8 @@ def mainline():
         if args.udp:
             print("bbperf version {} (protocol: UDP)".format(const.BBPERF_VERSION), flush=True)
         else:
-            print("bbperf version {} (protocol: TCP, congestion control: {})".format(const.BBPERF_VERSION, args.congestion), flush=True)
+            print("bbperf version {} (protocol: TCP, congestion control: {}, tcp_notsent_lowat: {})".format(
+                const.BBPERF_VERSION, args.congestion, args.tcp_notsent_lowat), flush=True)
 
         client.client_mainline(args)
     else:
