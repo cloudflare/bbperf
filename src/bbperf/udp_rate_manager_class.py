@@ -15,6 +15,7 @@ class UdpRateManagerClass:
         self.receiver_pps_list = []
         self.last_new_rate = 0
         self.initial_climb = True
+        self.steady_state_factor = getattr(args, '_udp_steady_state_factor', 1.05)
 
     # control receiver calls this with interval pps (every 0.1 seconds)
     def update(self, r_record):
@@ -46,8 +47,8 @@ class UdpRateManagerClass:
             # initial climb at 20%
             new_rate = int(receiver_pps_p50 * 1.2)
         else:
-            # maintain steady state
-            new_rate = int(receiver_pps_p50 * 1.05)
+            # maintain steady state at configured overshoot factor
+            new_rate = int(receiver_pps_p50 * self.steady_state_factor)
 
         if new_rate < const.UDP_MIN_RATE:
             new_rate = const.UDP_MIN_RATE
