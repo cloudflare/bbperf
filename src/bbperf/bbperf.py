@@ -103,6 +103,16 @@ def mainline():
         default="cubic",
         help="congestion control algorithm (default: cubic)")
 
+    parser.add_argument("--udp-target-loss",
+        metavar="PERCENT",
+        type=float,
+        default=None,
+        help="target UDP packet loss rate in percent (e.g., 1.0 for 1%%). "
+             "Controls how aggressively the sender overshoots the receiver "
+             "rate in steady state. Lower values give more conservative "
+             "throughput numbers with less loss. Default behavior (when not "
+             "specified) targets ~5%% loss.")
+
     parser.add_argument("--tcp-notsent-lowat",
         metavar="BYTES",
         type=int,
