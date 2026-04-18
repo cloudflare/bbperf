@@ -90,7 +90,7 @@ def mainline():
     parser.add_argument("-B", "--bind",
         metavar="BIND_ADDR",
         default="0.0.0.0",
-        help="bind server sockets to address")
+        help="bind to address (server: listen address, client: source address)")
 
     parser.add_argument("--local-data-port",
         metavar="LOCAL_DATA_PORT",

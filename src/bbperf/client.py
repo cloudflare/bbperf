@@ -54,6 +54,8 @@ def client_mainline(args):
         print("creating control connection to server at {}".format(server_addr), flush=True)
 
     control_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    if args.bind and args.bind != '0.0.0.0':
+        control_sock.bind((args.bind, 0))
     control_sock.connect(server_addr)
 
     client_control_addr = control_sock.getsockname()
@@ -85,9 +87,10 @@ def client_mainline(args):
 
     if args.udp:
         data_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        # bind client data connection to specific local port
-        if args.local_data_port > 0:
-            data_sock.bind(('0.0.0.0', args.local_data_port))
+        # bind client data connection to local address and/or port
+        bind_addr = args.bind if (args.bind and args.bind != '0.0.0.0') else '0.0.0.0'
+        if args.local_data_port > 0 or bind_addr != '0.0.0.0':
+            data_sock.bind((bind_addr, args.local_data_port))
         data_sock.settimeout(const.SOCKET_TIMEOUT_SEC)
         # must send something just to bind a local addr
         # this packet is not used by the server
@@ -125,9 +128,10 @@ def client_mainline(args):
 
     else:
         data_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # bind client data connection to specific local port
-        if args.local_data_port > 0:
-            data_sock.bind(('0.0.0.0', args.local_data_port))
+        # bind client data connection to local address and/or port
+        bind_addr = args.bind if (args.bind and args.bind != '0.0.0.0') else '0.0.0.0'
+        if args.local_data_port > 0 or bind_addr != '0.0.0.0':
+            data_sock.bind((bind_addr, args.local_data_port))
         tcp_helper.set_congestion_control(args, data_sock)
         tcp_helper.set_tcp_notsent_lowat(data_sock, args.tcp_notsent_lowat)
         data_sock.connect(server_addr)
