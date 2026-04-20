@@ -106,7 +106,7 @@ def mainline():
     parser.add_argument("--udp-target-loss",
         metavar="PERCENT",
         type=float,
-        default=None,
+        default=5.0,
         help="target UDP packet loss rate in percent (e.g., 1.0 for 1%%). "
              "Controls how aggressively the sender overshoots the receiver "
              "rate in steady state. Lower values give more conservative "

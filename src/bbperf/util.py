@@ -26,16 +26,15 @@ def validate_and_finalize_args(args):
     if args.graph_file and (not args.graph_file.endswith(".png")):
         raise Exception("ERROR: argument --graph-file must end with \".png\"")
 
-    # compute UDP steady-state sending rate factor from --udp-target-loss
-    udp_target_loss = getattr(args, 'udp_target_loss', None)
-    if udp_target_loss is not None:
-        if udp_target_loss <= 0 or udp_target_loss >= 100:
-            raise Exception("ERROR: --udp-target-loss must be between 0 and 100 (exclusive), got {}".format(udp_target_loss))
-        # To achieve X% loss at equilibrium, send at a rate of 1/(1 - X/100)
-        # times the receiver rate. E.g., 1% loss -> factor 1.0101, 5% -> 1.0526
-        args._udp_steady_state_factor = 1.0 / (1.0 - udp_target_loss / 100.0)
-    else:
-        args._udp_steady_state_factor = 1.05  # default: ~5% loss
+    if args.udp_target_loss <= 0 or args.udp_target_loss >= 100:
+        raise Exception("ERROR: --udp-target-loss must be between 0 and 100 (exclusive), got {}".format(args.udp_target_loss))
+
+    d = vars(args)
+
+    # compute UDP steady-state sending rate factor from --udp-target-loss    
+    # To achieve X% loss at equilibrium, send at a rate of 1/(1 - X/100)
+    # times the receiver rate. E.g., 1% loss -> factor 1.0101, 5% -> 1.0526
+    d["udp_steady_state_factor"] = 1.0 / (1.0 - args.udp_target_loss / 100.0)
 
     # set max_run_time_failsafe_sec
     # never run longer than this under any circumstances
@@ -49,7 +48,6 @@ def validate_and_finalize_args(args):
     max_run_time_failsafe_sec += const.MAX_DATA_COLLECTION_TIME_WITHOUT_VALID_DATA
     max_run_time_failsafe_sec += args.time
 
-    d = vars(args)
     d["max_run_time_failsafe_sec"] = max_run_time_failsafe_sec
 
 
