@@ -1,6 +1,7 @@
 # Copyright (c) 2024 Cloudflare, Inc.
 # Licensed under the Apache 2.0 license found in the LICENSE file or at https://www.apache.org/licenses/LICENSE-2.0
 
+import socket
 import time
 
 from . import const
@@ -22,7 +23,7 @@ def send_stop_message(data_sock, peer_addr):
         for i in range(3):
             try:
                 data_sock.sendto(payload_bytes, peer_addr)
-            except:
+            except (OSError, socket.error):
                 # probable "ConnectionRefusedError: [Errno 111] Connection refused" here if first message was processed successfully
                 pass
 

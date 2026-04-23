@@ -14,7 +14,7 @@ def validate_and_finalize_args(args):
     if (not args.server) and (not args.client):
         raise Exception("ERROR: must be either a client or a server")
 
-    if args.port > 65535:
+    if args.port < 1 or args.port > 65535:
         raise Exception("ERROR: invalid server port {}".format(args.port))
 
     if args.verbosity and args.quiet:
@@ -31,7 +31,7 @@ def validate_and_finalize_args(args):
 
     d = vars(args)
 
-    # compute UDP steady-state sending rate factor from --udp-target-loss    
+    # compute UDP steady-state sending rate factor from --udp-target-loss
     # To achieve X% loss at equilibrium, send at a rate of 1/(1 - X/100)
     # times the receiver rate. E.g., 1% loss -> factor 1.0101, 5% -> 1.0526
     d["udp_steady_state_factor"] = 1.0 / (1.0 - args.udp_target_loss / 100.0)
@@ -64,12 +64,12 @@ def convert_udp_pps_to_batch_size(packets_per_sec):
 def done_with_socket(mysock):
     try:
         mysock.shutdown(socket.SHUT_RDWR)
-    except:
+    except (OSError, socket.error):
         pass
 
     try:
         mysock.close()
-    except:
+    except (OSError, socket.error):
         pass
 
 
@@ -82,7 +82,7 @@ def threads_are_running(thread_list):
         else:
             if t.exitcode != 0:
                 # thread existing abnormally -- kill everything and go home
-                raise Exception("FATAL: one of the subprocesses existed abnormally, name: {}, exitcode: {}".format(t.name, t.exitcode))
+                raise Exception("FATAL: one of the subprocesses exited abnormally, name: {}, exitcode: {}".format(t.name, t.exitcode))
 
     return any_running
 
@@ -122,7 +122,10 @@ def parse_r_record(args, s1):
 
     r_record["sender_interval_rate_mbps"] = sender_interval_rate_bps / (10 ** 6)
 
-    r_record["receiver_interval_rate_bytes_per_sec"] = r_record["r_receiver_interval_bytes_received"] / r_record["r_receiver_interval_duration_sec"]
+    try:
+        r_record["receiver_interval_rate_bytes_per_sec"] = r_record["r_receiver_interval_bytes_received"] / r_record["r_receiver_interval_duration_sec"]
+    except ZeroDivisionError:
+        r_record["receiver_interval_rate_bytes_per_sec"] = 0
 
     receiver_interval_rate_bps = r_record["receiver_interval_rate_bytes_per_sec"] * 8
     r_record["receiver_interval_rate_mbps"] = receiver_interval_rate_bps / (10 ** 6)
@@ -136,7 +139,11 @@ def parse_r_record(args, s1):
         except ZeroDivisionError:
             r_record["sender_pps"] = 0
 
-        r_record["receiver_pps"] = int(r_record["r_receiver_interval_pkts_received"] / r_record["r_receiver_interval_duration_sec"])
+        try:
+            r_record["receiver_pps"] = int(r_record["r_receiver_interval_pkts_received"] / r_record["r_receiver_interval_duration_sec"])
+        except ZeroDivisionError:
+            r_record["receiver_pps"] = 0
+
         r_record["total_dropped"] = r_record["r_sender_total_pkts_sent"] - r_record["r_receiver_total_pkts_received"]
         if r_record["total_dropped"] < 0:
             # this can happen if we happen to pick up an "early" a_b block (probably just negative by 1 or 2, not a big deal)

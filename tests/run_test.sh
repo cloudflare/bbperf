@@ -6,12 +6,17 @@
 do_run() {
   ARGS=$1
 
-  #bbperf -c $ARGS
-  sudo ip netns exec ns1 bash -c ". $HOME/.venv-314/bin/activate ; cd $HOME/bbperf/src ; python3 -m bbperf.bbperf $ARGS"
+  sudo ip netns exec ns1 bash -c ". $HOME/bbperf/.venv/bin/activate ; cd $HOME/bbperf/src ; python3 -m bbperf.bbperf $ARGS"
 }
 
 #SERVER_ADDR=127.0.0.1
 SERVER_ADDR=10.66.30.2
+
+
+# test graphing
+#EXTRAARGS="-v -t 20 -g" 
+#do_run "-c $SERVER_ADDR $EXTRAARGS"
+
 
 EXTRAARGS="-v -t 10"
 

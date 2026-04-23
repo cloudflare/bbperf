@@ -22,13 +22,15 @@ def create_graph(args, datafile1, pngfilename):
         gp_file = this_script_dir + "/tcp-graph.gp"
         graph_title = "bbperf TCP {}".format(filename_in_title)
 
-    gnuplot_script = "datafile1 = \"{}\" ; graphtitle = \"{}\" ; load \"{}\"".format(
-        datafile1, graph_title, gp_file)
+    gnuplot_script_list = ["gnuplot",
+          "-e", f"datafile1='{datafile1}'",
+          "-e", f"graphtitle='{graph_title}'",
+          "-e", f"load '{gp_file}'"]
 
-    result = subprocess.run(["gnuplot", "-e", gnuplot_script], capture_output=True)
+    result = subprocess.run(gnuplot_script_list, capture_output=True)
 
     if args.verbosity or (result.returncode != 0):
-        print("gnuplot -e {}".format(gnuplot_script), flush=True)
+        print(" ".join(gnuplot_script_list), flush=True)
         print("returncode: {}".format(result.returncode), flush=True)
         print("stdout: {}".format(result.stdout), flush=True)
         print("stderr: {}".format(result.stderr), flush=True)
