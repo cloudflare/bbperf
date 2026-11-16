@@ -3,7 +3,13 @@ PREREQUISITES
 
     Appropriate account/credentials to upload to the PyPI site
 
-    python3 -m pip install --upgrade pip build twine
+    vim ~/.pypirc
+        [pypi]
+        username = __token__
+        password = pypi-xxx
+
+    source $HOME/.venv-bbperf/bin/activate
+    pip install --upgrade pip build twine
 
 BUILD
 
