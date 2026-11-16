@@ -6,8 +6,10 @@
 do_run() {
   ARGS=$1
 
-  sudo ip netns exec ns1 bash -c ". $HOME/bbperf/.venv/bin/activate ; cd $HOME/bbperf/src ; python3 -m bbperf.bbperf $ARGS"
+  sudo ip netns exec ns1 bash -c ". $HOME/.venv-bbperf/bin/activate ; cd ${REPOSITORY_DIR}/src ; python3 -m bbperf.bbperf $ARGS"
 }
+
+REPOSITORY_DIR=$HOME/bbperf
 
 #SERVER_ADDR=127.0.0.1
 SERVER_ADDR=10.66.30.2

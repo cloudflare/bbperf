@@ -21,6 +21,7 @@ from . import output
 from . import graph
 from . import tcp_helper
 from . import udp_helper
+from . import socket_helper
 
 from .tcp_control_connection_class import TcpControlConnectionClass
 
@@ -88,6 +89,7 @@ def client_mainline(args):
         data_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # bind client data connection to local address and/or port
         data_sock.bind((args.bind, args.local_data_port))
+        socket_helper.set_so_rcvbuf(args, data_sock)
         data_sock.settimeout(const.SOCKET_TIMEOUT_SEC)
         # must send something just to bind a local addr
         # this packet is not used by the server

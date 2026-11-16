@@ -119,6 +119,16 @@ def mainline():
         default=131072,
         help="net.ipv4.tcp_notsent_lowat (default: 131072)")
 
+    parser.add_argument("--udp-rcvbuf",
+        metavar="BYTES",
+        type=int,
+        default=None,
+        help="If specified, this sets socket option SO_RCVBUF for the UDP data socket "
+             "during UDP tests. The value is doubled by the setsockopt system call. "
+             "If not specified, this value defaults to net.core.rmem_default.  This "
+             "option is often useful when there are drops at the UDP receive buffer "
+             "of the data receiver.")
+
     args = parser.parse_args()
 
     util.validate_and_finalize_args(args)
@@ -126,7 +136,8 @@ def mainline():
     if args.client:
 
         if args.udp:
-            print("bbperf version {} (protocol: UDP)".format(const.BBPERF_VERSION), flush=True)
+            print("bbperf version {} (protocol: UDP, SO_RCVBUF: {})".format(
+                const.BBPERF_VERSION, args.udp_rcvbuf), flush=True)
         else:
             print("bbperf version {} (protocol: TCP, congestion control: {}, tcp_notsent_lowat: {})".format(
                 const.BBPERF_VERSION, args.congestion, args.tcp_notsent_lowat), flush=True)

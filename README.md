@@ -62,9 +62,10 @@ Should `bbperf` not detect any valid data samples for 60 seconds after calibrati
 
 ```
 $ bbperf.py --help
-usage: bbperf.py [-h] [-s] [-c SERVER_ADDR] [-p SERVER_PORT] [-u] [-R] [--max-ramp-time SECONDS] [-t SECONDS] [-v] [-q] [-J JSON_FILE] [-g]
-                 [--graph-file GRAPH_FILE] [--graph-data-file GRAPH_DATA_FILE] [--raw-data-file RAW_DATA_FILE] [-B BIND_ADDR]
-                 [--local-data-port LOCAL_DATA_PORT] [-C CC_ALGORITHM]
+usage: bbperf.py [-h] [-s] [-c SERVER_ADDR] [-p SERVER_PORT] [-u] [-R] [--max-ramp-time SECONDS] [-t SECONDS] [-v] [-q]
+                 [-J JSON_FILE] [-g] [--graph-file GRAPH_FILE] [--graph-data-file GRAPH_DATA_FILE]
+                 [--raw-data-file RAW_DATA_FILE] [-B BIND_ADDR] [--local-data-port LOCAL_DATA_PORT] [-C CC_ALGORITHM]
+                 [--udp-target-loss PERCENT] [--tcp-notsent-lowat BYTES] [--udp-rcvbuf BYTES]
 
 bbperf: end to end performance and bufferbloat measurement tool
 
@@ -93,11 +94,21 @@ options:
   --raw-data-file RAW_DATA_FILE
                         save raw data to the specified file
   -B BIND_ADDR, --bind BIND_ADDR
-                        bind server sockets to address
+                        bind to address (server: listen address, client: source address)
   --local-data-port LOCAL_DATA_PORT
                         local port for data connection (default: ephemeral)
   -C CC_ALGORITHM, --congestion CC_ALGORITHM
                         congestion control algorithm (default: cubic)
+  --udp-target-loss PERCENT
+                        target UDP packet loss rate in percent (e.g., 1.0 for 1%). Controls how aggressively the sender
+                        overshoots the receiver rate in steady state. Lower values give more conservative throughput numbers with
+                        less loss. Default behavior (when not specified) targets ~5% loss.
+  --tcp-notsent-lowat BYTES
+                        net.ipv4.tcp_notsent_lowat (default: 131072)
+  --udp-rcvbuf BYTES    If specified, this sets socket option SO_RCVBUF for the UDP data socket during UDP tests. The value is
+                        doubled by the setsockopt system call. If not specified, this value defaults to net.core.rmem_default.
+                        This option is often useful when there are drops at the UDP receive buffer of the data receiver.
+
 ```
 
 Output from `bbperf` includes the following information:

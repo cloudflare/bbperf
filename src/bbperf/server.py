@@ -14,6 +14,7 @@ from . import udp_string_sender_thread
 from . import util
 from . import const
 from . import tcp_helper
+from . import socket_helper
 
 from .tcp_control_connection_class import TcpControlConnectionClass
 
@@ -77,6 +78,7 @@ def server_mainline(args):
 
             print("binding udp data socket to local address {}".format(server_addr), flush=True)
             data_sock.bind(server_addr)
+            socket_helper.set_so_rcvbuf(client_args, data_sock)           
             data_sock.settimeout(const.SOCKET_TIMEOUT_SEC)
             if client_args.verbosity:
                 print("created udp data connection, no client addr, server addr {}".format(server_addr), flush=True)
